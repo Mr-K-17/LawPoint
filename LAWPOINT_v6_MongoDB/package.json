@@ -1,0 +1,17 @@
+{
+    "name": "lawpoint-v6-mongodb",
+    "version": "6.0.0",
+    "description": "LAW POINT v6 - Lawyer-Client Platform with MongoDB",
+    "private": true,
+    "scripts": {
+        "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+        "dev": "concurrently \"npm run backend\" \"npm run frontend\"",
+        "backend": "cd backend && npm start",
+        "frontend": "cd frontend && npm start",
+        "backend:dev": "cd backend && npm run dev",
+        "frontend:dev": "cd frontend && npm run dev"
+    },
+    "devDependencies": {
+        "concurrently": "^8.0.1"
+    }
+}
