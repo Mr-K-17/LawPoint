@@ -1,0 +1,1 @@
+mongodb+srv://kishoresathyagala_db_user:<kishu2005>@lawpoint.mlyx6nz.mongodb.net/?appName=lawpoint
