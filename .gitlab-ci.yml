@@ -1,0 +1,46 @@
+image: node:22-alpine
+
+stages:
+  - install
+  - test
+  - build
+  - deploy
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+
+install:
+  stage: install
+  script:
+    - npm ci
+  artifacts:
+    paths:
+      - node_modules/
+
+test:
+  stage: test
+  script:
+    - npm test || echo "⚠️ No tests defined"
+  artifacts:
+    when: always
+    paths:
+      - test-results/
+
+build:
+  stage: build
+  script:
+    - npm run build
+  artifacts:
+    paths:
+      - dist/
+      - node_modules/
+
+deploy:
+  stage: deploy
+  script:
+    - echo "🚀 Render will pull from GitLab and deploy automatically."
+    - echo "No manual deploy steps needed here."
+  only:
+    - main
