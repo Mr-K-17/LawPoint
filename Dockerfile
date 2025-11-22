@@ -7,7 +7,7 @@ COPY package*.json ./
 COPY . .
 
 # Install dependencies
-RUN npm install --production
+RUN npm install
 
 # Build frontend (if using Vite)
 RUN npm run build || true
