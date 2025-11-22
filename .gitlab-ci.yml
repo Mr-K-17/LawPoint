@@ -6,41 +6,49 @@ stages:
   - build
   - deploy
 
+# ---- GLOBAL CACHE ----
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
     - node_modules/
 
+# ---- INSTALL DEPENDENCIES ----
 install:
   stage: install
   script:
+    - echo "📦 Installing dependencies..."
     - npm ci
   artifacts:
     paths:
       - node_modules/
 
+# ---- RUN TESTS (Optional) ----
 test:
   stage: test
   script:
+    - echo "🧪 Running tests..."
     - npm test || echo "⚠️ No tests defined"
   artifacts:
     when: always
     paths:
       - test-results/
 
+# ---- BUILD PROJECT ----
 build:
   stage: build
   script:
+    - echo "🏗️ Building project..."
     - npm run build
   artifacts:
     paths:
       - dist/
       - node_modules/
 
+# ---- DEPLOY TO RENDER ----
 deploy:
   stage: deploy
   script:
-    - echo "🚀 Render will pull from GitLab and deploy automatically."
-    - echo "No manual deploy steps needed here."
+    - echo "🚀 Render automatically builds and deploys from the repo."
+    - echo "➡️ Push to 'main' triggers Render deployment."
   only:
     - main

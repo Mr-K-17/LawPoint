@@ -1,19 +1,39 @@
-# Node.js + Vite + MongoDB client Dockerfile
-FROM node:22-alpine
+# ----------------------------
+# 1) BUILD STAGE
+# ----------------------------
+FROM node:22-alpine AS builder
 
 WORKDIR /app
 
+# Install dependencies
 COPY package*.json ./
+RUN npm ci
+
+# Copy source
 COPY . .
 
-# Install dependencies
-RUN npm install
+# Build frontend (Vite)
+RUN npm run build
 
-# Build frontend (if using Vite)
-RUN npm run build || true
+# ----------------------------
+# 2) RUNNER STAGE
+# ----------------------------
+FROM node:22-alpine AS runner
 
-# Expose port for backend
+WORKDIR /app
+
+# Copy only required files
+COPY package*.json ./
+
+# Install ONLY production deps
+RUN npm ci --omit=dev
+
+# Copy built frontend & server code
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/server.js ./server.js
+
+# Expose port
 EXPOSE 5000
 
-# Start server
-CMD ["npm", "start"]
+# Start with relaxed TLS for MongoDB Atlas compatibility
+CMD ["node", "--tls-min-v1.0", "server.js"]
