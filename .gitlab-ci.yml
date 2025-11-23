@@ -6,13 +6,17 @@ stages:
   - build
   - deploy
 
-# ---- GLOBAL CACHE ----
+# ------------------------------
+# GLOBAL CACHE
+# ------------------------------
 cache:
   key: ${CI_COMMIT_REF_SLUG}
   paths:
     - node_modules/
 
-# ---- INSTALL DEPENDENCIES ----
+# ------------------------------
+# INSTALL DEPENDENCIES
+# ------------------------------
 install:
   stage: install
   script:
@@ -22,7 +26,9 @@ install:
     paths:
       - node_modules/
 
-# ---- RUN TESTS (Optional) ----
+# ------------------------------
+# TESTS (OPTIONAL)
+# ------------------------------
 test:
   stage: test
   script:
@@ -33,22 +39,26 @@ test:
     paths:
       - test-results/
 
-# ---- BUILD PROJECT ----
+# ------------------------------
+# BUILD PROJECT (Vite)
+# ------------------------------
 build:
   stage: build
   script:
-    - echo "🏗️ Building project..."
+    - echo "🏗️ Building frontend & preparing backend..."
     - npm run build
   artifacts:
     paths:
       - dist/
       - node_modules/
 
-# ---- DEPLOY TO RENDER ----
+# ------------------------------
+# DEPLOY (Render handles deploy)
+# ------------------------------
 deploy:
   stage: deploy
   script:
-    - echo "🚀 Render automatically builds and deploys from the repo."
-    - echo "➡️ Push to 'main' triggers Render deployment."
+    - echo "🚀 Deployment handled by Render automatically."
+    - echo "➡️ Push to 'main' = Render redeploy."
   only:
     - main

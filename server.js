@@ -2,6 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import { MongoClient, ServerApiVersion } from "mongodb";
+import path from "path";
+import { fileURLToPath } from "url";
 
 dotenv.config();
 
@@ -206,6 +208,21 @@ async function startServer() {
         } catch (error) {
             res.status(500).json({ error: error.message });
         }
+    });
+
+    // -----------------------------------------
+    // SERVE FRONTEND (DIST)
+    // -----------------------------------------
+
+    const __filename = fileURLToPath(
+        import.meta.url);
+    const __dirname = path.dirname(__filename);
+
+    app.use(express.static(path.join(__dirname, "dist")));
+
+    // React Router support
+    app.get("*", (req, res) => {
+        res.sendFile(path.join(__dirname, "dist", "index.html"));
     });
 
     // -----------------------------------------
