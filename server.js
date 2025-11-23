@@ -1,3 +1,7 @@
+// -----------------------------------------
+// server.js — FIXED + RENDER READY
+// -----------------------------------------
+
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
@@ -24,7 +28,7 @@ if (!process.env.MONGODB_URI) {
 
 const uri = process.env.MONGODB_URI;
 
-// Mask password for logging
+// Mask password for terminal logs
 const maskedUri = uri.replace(/:(?:[^:@]+)@/, ":<password>@");
 
 // MongoDB client options
@@ -34,8 +38,8 @@ const clientOptions = {
         strict: true,
         deprecationErrors: true,
     },
-    connectTimeoutMS: 10000,
-    serverSelectionTimeoutMS: 10000,
+    connectTimeoutMS: 20000,
+    serverSelectionTimeoutMS: 20000,
 };
 
 const client = new MongoClient(uri, clientOptions);
@@ -46,7 +50,7 @@ let db = null;
 // -----------------------------------------
 async function connectDB() {
     try {
-        console.log("Attempting MongoDB connection:", maskedUri);
+        console.log("Attempting MongoDB Connection:", maskedUri);
         await client.connect();
         db = client.db("lawpoint_db");
         console.log("✅ Successfully connected to MongoDB!");
@@ -57,14 +61,14 @@ async function connectDB() {
 }
 
 // -----------------------------------------
-// 3. Start server after DB connection
+// 3. Start the server after DB connection
 // -----------------------------------------
 async function startServer() {
     await connectDB();
 
-    // -------------------------------
-    // API ENDPOINTS
-    // -------------------------------
+    // -----------------------------------------
+    // API ENDPOINTS (untouched — same as provided)
+    // -----------------------------------------
 
     // Fetch initial data
     app.get("/api/initial-data", async(req, res) => {
@@ -211,34 +215,38 @@ async function startServer() {
     });
 
     // -----------------------------------------
-    // SERVE FRONTEND (DIST)
+    // SERVE FRONTEND (dist/)
     // -----------------------------------------
-
     const __filename = fileURLToPath(
         import.meta.url);
     const __dirname = path.dirname(__filename);
 
-    app.use(express.static(path.join(__dirname, "dist")));
+    const distPath = path.join(__dirname, "dist");
 
-    // React Router support
-    app.get("*", (req, res) => {
-        res.sendFile(path.join(__dirname, "dist", "index.html"));
+    // Serve built frontend
+    app.use(express.static(distPath));
+
+    // Fallback for SPA
+    app.get(/.*/, (req, res) => {
+        res.sendFile(path.join(distPath, "index.html"));
     });
 
     // -----------------------------------------
-    // Start the server
+    // Start server
     // -----------------------------------------
     const server = app.listen(PORT, () => {
-        console.log(`🚀 Server running on http://localhost:${PORT}`);
+        console.log(`🚀 Server running on port ${PORT}`);
     });
 
     // Graceful shutdown
     process.on("SIGINT", async() => {
+        console.log("🔌 Closing MongoDB...");
         await client.close();
         server.close(() => process.exit(0));
     });
 
     process.on("SIGTERM", async() => {
+        console.log("🔌 Closing MongoDB...");
         await client.close();
         server.close(() => process.exit(0));
     });
