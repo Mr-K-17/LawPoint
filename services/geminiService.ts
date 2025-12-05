@@ -8,7 +8,7 @@ export const getAINews = async (): Promise<NewsArticle[]> => {
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
-      contents: "Generate an array of 6 recent and relevant news articles for a legal professional. Include a headline, a 2-3 sentence summary, a relevant stock image URL, the source URL, and a category. Ensure categories are very diverse, such as 'Corporate Law', 'Criminal Justice', 'Legal Tech', 'Human Rights', 'Intellectual Property', 'Real Estate Law', 'Family Law', 'Immigration', 'Environmental Law', 'Cyber Law'. Do not repeat categories if possible.",
+      contents: "Generate an array of 12 recent and relevant news articles for a legal professional. Include a headline, a 2-3 sentence summary, a relevant stock image URL , the source URL, and a category. Ensure categories are very diverse, such as 'Corporate Law', 'Criminal Justice', 'Legal Tech', 'Human Rights', 'Intellectual Property', 'Real Estate Law', 'Family Law', 'Immigration', 'Environmental Law', 'Cyber Law'. Do not repeat categories if possible.",
       config: {
         responseMimeType: 'application/json',
         responseSchema: {
